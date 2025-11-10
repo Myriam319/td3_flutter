@@ -1,26 +1,22 @@
-// Fichier: lib/UI/card4.dart (mis à jour avec Provider)
+// Fichier: lib/UI/card4.dart (mis à jour avec Provider - context.watch/read)
 
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:provider/provider.dart'; // NOUVEL IMPORT
+import 'package:provider/provider.dart'; // Importez Provider
 import 'mytheme.dart';
-import '../setting_viewmodel.dart'; // Import du ViewModel
+import '../setting_viewmodel.dart'; // Importez le ViewModel
 
-// ✅ Converti en StatelessWidget car l'état est dans le ViewModel
-class EcranSettings extends StatelessWidget { 
+// Converti en StatelessWidget : l'état est maintenant géré par le ViewModel
+class EcranSettings extends StatelessWidget {
   const EcranSettings({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Utilise context.read pour obtenir l'instance sans écouter
-    final settingViewModel = context.read<SettingViewModel>();
-    
-    // Utilise context.watch pour lire l'état (ou on lit directement le getter)
-    final bool isDark = settingViewModel.isDark;
+    // 💡 context.watch() : Écoute les changements dans le ViewModel pour mettre à jour l'UI (le switch)
+    final isDark = context.watch<SettingViewModel>().isDark; 
 
     return Center(
       child: SettingsList(
-        // ... (Le reste des thèmes SettingsList)
         darkTheme: SettingsThemeData(
           settingsListBackground: MyTheme.dark().scaffoldBackgroundColor,
           settingsSectionBackground: MyTheme.dark().scaffoldBackgroundColor,
@@ -34,11 +30,12 @@ class EcranSettings extends StatelessWidget {
             title: const Text('Theme'),
             tiles: [
               SettingsTile.switchTile(
-                // ✅ InitialValue lit l'état du ViewModel
+                // Utilise l'état lu du ViewModel
                 initialValue: isDark, 
-                onToggle: (value) {
-                  // ✅ L'action appelle le setter du ViewModel
-                  settingViewModel.isDark = value;
+                // 💡 context.read() : Accède au ViewModel pour appeler une méthode (modifier l'état)
+                // sans déclencher une reconstruction de ce widget.
+                onToggle: (bool value) {
+                  context.read<SettingViewModel>().isDark = value;
                 },
                 title: const Text('Dark mode'),
                 leading: const Icon(Icons.invert_colors),
