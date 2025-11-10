@@ -1,44 +1,48 @@
-// Fichier: lib/main.dart (Intégration de Provider et Consumer)
+// Fichier: lib/main.dart (mis à jour avec MultiProvider)
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; // Importez Provider
+import 'package:provider/provider.dart';
 import 'UI/mytheme.dart';
-import 'UI/home.dart'; 
-import 'setting_viewmodel.dart'; // Importez le ViewModel
+import 'UI/home.dart';
+import 'setting_viewmodel.dart';
+import 'task_viewmodel.dart'; // ✅ NOUVEL IMPORT
 
 void main() {
-  // WidgetsFlutterBinding.ensureInitialized() n'est plus nécessaire ici
-  // car le chargement asynchrone est géré dans le constructeur/méthode du ViewModel.
   runApp(const MyTD2());
 }
 
-// Renommez ou modifiez votre ancienne classe MyTD2App
 class MyTD2 extends StatelessWidget {
   const MyTD2({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // 1. ChangeNotifierProvider injecte le ViewModel à la racine
-    return ChangeNotifierProvider<SettingViewModel>(
-      // La fonction create est appelée une seule fois
-      create: (_) {
-        SettingViewModel settingViewModel = SettingViewModel();
-        // getSettings() est déjà appelé dans le constructeur du ViewModel,
-        // ce qui garantit que l'état initial est chargé.
-        return settingViewModel;
-      },
-      
-      // 2. Consumer écoute le ViewModel et ne reconstruit que son builder
+    // 1. Utilisation de MultiProvider pour fournir plusieurs ViewModels
+    return MultiProvider(
+      providers: [
+        // Provider 1: Pour la gestion du thème
+        ChangeNotifierProvider(
+          create: (_) {
+            SettingViewModel settingViewModel = SettingViewModel();
+            // getSettings() est déjà appelée dans le constructeur
+            return settingViewModel;
+          },
+        ),
+        // Provider 2: Pour la gestion des tâches
+        ChangeNotifierProvider(
+          create: (_) {
+            TaskViewModel taskViewModel = TaskViewModel();
+            taskViewModel.generateTasks(); // Charge les 50 tâches au démarrage
+            return taskViewModel;
+          },
+        ),
+      ],
+      // 2. Consumer écoute uniquement le SettingViewModel pour mettre à jour le thème
       child: Consumer<SettingViewModel>(
-        // Le builder reçoit l'instance du ViewModel (notifier)
         builder: (context, notifier, child) {
-          // Utilise l'état isDark du ViewModel pour choisir le thème
-          final theme = notifier.isDark ? MyTheme.dark() : MyTheme.light();
-
           return MaterialApp(
-            theme: theme,
+            theme: notifier.isDark ? MyTheme.dark() : MyTheme.light(),
             title: 'TD2',
-            home: Home(), // Utilise la page d'accueil principale
+            home: Home(),
           );
         },
       ),
