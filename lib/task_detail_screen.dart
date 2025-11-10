@@ -1,6 +1,8 @@
-// Fichier: task_detail_screen.dart
+// Fichier: lib/task_detail_screen.dart (Restauration)
+
 import 'package:flutter/material.dart';
-import 'task.dart'; // Assurez-vous d'importer votre classe Task
+// Correction d'importation probable pour Task
+import '../models/task.dart'; 
 
 class TaskDetailScreen extends StatelessWidget {
   final Task task;
@@ -8,7 +10,7 @@ class TaskDetailScreen extends StatelessWidget {
   const TaskDetailScreen({required this.task, super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { // La méthode build est ajoutée/restaurée
     return Scaffold(
       appBar: AppBar(
         title: const Text('Détails de la Tâche'),

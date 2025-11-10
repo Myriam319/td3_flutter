@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import '../models/task.dart';
-// Importation de l'écran de détails
 import 'detail.dart';
 
 class Ecran2 extends StatefulWidget {

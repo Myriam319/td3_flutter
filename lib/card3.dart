@@ -2,10 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-// CORRECTION DANS lib/card3.dart
-// Si task.dart est dans lib/models/
-import '../models/task.dart'; 
-import 'detail.dart'; 
+import 'task.dart'; // Importez votre classe Task
+import 'task_detail_screen.dart'; // Importez le nouvel écran de détail
 
 // Modèle pour les données de l'API (pour correspondre à Task)
 class PostTask {
@@ -79,8 +77,7 @@ class _Ecran3State extends State<Ecran3> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        // CORRECTION 3: Utiliser la classe 'Detail' à la place de 'TaskDetailScreen'
-        builder: (context) => Detail(task: task),
+        builder: (context) => TaskDetailScreen(task: task),
       ),
     );
   }
